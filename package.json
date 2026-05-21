@@ -1,0 +1,29 @@
+{
+  "name": "oneshot-ai",
+  "version": "1.0.0",
+  "description": "One command. Any LLM. Get answers instantly from your terminal.",
+  "main": "src/index.js",
+  "bin": {
+    "oneshot": "./src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "cli",
+    "openai",
+    "anthropic",
+    "gemini",
+    "gpt",
+    "claude",
+    "terminal"
+  ],
+  "author": "vishwasvijayabaskar-code",
+  "license": "MIT",
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
