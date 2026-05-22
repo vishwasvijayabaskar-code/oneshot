@@ -114,6 +114,14 @@ oneshot --list
 | Install time | <1s | ~30s | ~60s |
 | Lines of code | ~300 | ~5000 | ~50000 |
 
+## Also By Me
+
+- [gitgenius](https://github.com/vishwasvijayabaskar-code/gitgenius) — AI-powered git commits, PR descriptions, changelogs
+- [aiterm](https://github.com/vishwasvijayabaskar-code/aiterm) — AI terminal assistant, auto-explain errors
+- [promptbattle](https://github.com/vishwasvijayabaskar-code/promptbattle) — Compare LLM responses side-by-side
+- [awesome-ai-agents](https://github.com/vishwasvijayabaskar-code/awesome-ai-agents) — Curated list of AI agent frameworks
+- [ai-system-design-primer](https://github.com/vishwasvijayabaskar-code/ai-system-design-primer) — System design for AI systems
+
 ## License
 
 MIT
