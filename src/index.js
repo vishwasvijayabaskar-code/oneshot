@@ -231,6 +231,12 @@ async function main() {
   const args = process.argv.slice(2);
 
   // Handle flags
+  if (args.includes("--version") || args.includes("-v")) {
+    const pkg = JSON.parse(readFileSync(join(__dirname, "..", "package.json"), "utf8"));
+    console.log(`oneshot v${pkg.version}`);
+    process.exit(0);
+  }
+
   if (args.includes("--help") || args.includes("-h") || args.length === 0) {
     console.log(`
   oneshot - One command. Any LLM. Get answers instantly.
