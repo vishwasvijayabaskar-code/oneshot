@@ -126,6 +126,7 @@ const MODEL_ALIASES = {
   "gpt4o": { provider: "openai", model: "gpt-4o" },
   "gpt4o-mini": { provider: "openai", model: "gpt-4o-mini" },
   "o3-mini": { provider: "openai", model: "o3-mini" },
+  "o4-mini": { provider: "openai", model: "o4-mini" },
   claude: { provider: "anthropic", model: "claude-sonnet-4-20250514" },
   "claude-opus": { provider: "anthropic", model: "claude-opus-4-20250514" },
   "claude-haiku": { provider: "anthropic", model: "claude-haiku-4-20250414" },
