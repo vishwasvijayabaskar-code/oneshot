@@ -15,13 +15,15 @@ const PROVIDERS = {
     envKey: "OPENAI_API_KEY",
     defaultModel: "gpt-4o",
     endpoint: "https://api.openai.com/v1/chat/completions",
-    buildBody: (model, prompt, system) => ({
+    buildBody: (model, prompt, system, opts = {}) => ({
       model,
       messages: [
         ...(system ? [{ role: "system", content: system }] : []),
         { role: "user", content: prompt },
       ],
       stream: true,
+      ...(opts.temperature != null && { temperature: opts.temperature }),
+      ...(opts.maxTokens && { max_tokens: opts.maxTokens }),
     }),
     parseChunk: (line) => {
       if (line === "data: [DONE]") return null;
@@ -43,12 +45,13 @@ const PROVIDERS = {
     envKey: "ANTHROPIC_API_KEY",
     defaultModel: "claude-sonnet-4-20250514",
     endpoint: "https://api.anthropic.com/v1/messages",
-    buildBody: (model, prompt, system) => ({
+    buildBody: (model, prompt, system, opts = {}) => ({
       model,
-      max_tokens: 4096,
+      max_tokens: opts.maxTokens || 4096,
       ...(system && { system }),
       messages: [{ role: "user", content: prompt }],
       stream: true,
+      ...(opts.temperature != null && { temperature: opts.temperature }),
     }),
     parseChunk: (line) => {
       if (!line.startsWith("data: ")) return "";
@@ -74,10 +77,13 @@ const PROVIDERS = {
     defaultModel: "gemini-2.5-flash",
     endpoint: (model, key) =>
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${key}`,
-    buildBody: (model, prompt, system) => ({
+    buildBody: (model, prompt, system, opts = {}) => ({
       contents: [{ parts: [{ text: prompt }] }],
       ...(system && {
         systemInstruction: { parts: [{ text: system }] },
+      }),
+      ...(opts.temperature != null && {
+        generationConfig: { temperature: opts.temperature, ...(opts.maxTokens && { maxOutputTokens: opts.maxTokens }) },
       }),
     }),
     parseChunk: (line) => {
@@ -98,13 +104,14 @@ const PROVIDERS = {
     envKey: null,
     defaultModel: "llama3.2",
     endpoint: "http://localhost:11434/api/chat",
-    buildBody: (model, prompt, system) => ({
+    buildBody: (model, prompt, system, opts = {}) => ({
       model,
       messages: [
         ...(system ? [{ role: "system", content: system }] : []),
         { role: "user", content: prompt },
       ],
       stream: true,
+      ...(opts.temperature != null && { options: { temperature: opts.temperature } }),
     }),
     parseChunk: (line) => {
       try {
@@ -251,11 +258,13 @@ async function main() {
   OPTIONS:
     --model, -m    Model or alias (default: gpt4o)
     --system, -s   System prompt
+    --temp, -t     Temperature (0.0-2.0)
+    --max-tokens   Max output tokens
     --list, -l     List available models
     --help, -h     Show this help
 
   MODEL ALIASES:
-    gpt4, gpt4o, gpt4o-mini, o3-mini
+    gpt4, gpt4o, gpt4o-mini, o3-mini, o4-mini
     claude, sonnet, opus, haiku
     gemini, gemini-pro, flash
     llama, mistral, phi (local via Ollama)
@@ -295,6 +304,8 @@ async function main() {
   // Parse arguments
   let modelArg = null;
   let systemPrompt = null;
+  let temperature = null;
+  let maxTokens = null;
   const promptParts = [];
 
   for (let i = 0; i < args.length; i++) {
@@ -302,6 +313,10 @@ async function main() {
       modelArg = args[++i];
     } else if (args[i] === "--system" || args[i] === "-s") {
       systemPrompt = args[++i];
+    } else if (args[i] === "--temp" || args[i] === "-t") {
+      temperature = parseFloat(args[++i]);
+    } else if (args[i] === "--max-tokens") {
+      maxTokens = parseInt(args[++i]);
     } else {
       promptParts.push(args[i]);
     }
@@ -342,8 +357,12 @@ async function main() {
     process.exit(1);
   }
 
+  const opts = {};
+  if (temperature != null) opts.temperature = temperature;
+  if (maxTokens) opts.maxTokens = maxTokens;
+
   const body = JSON.stringify(
-    providerConfig.buildBody(model, prompt, systemPrompt)
+    providerConfig.buildBody(model, prompt, systemPrompt, opts)
   );
 
   const endpoint =
