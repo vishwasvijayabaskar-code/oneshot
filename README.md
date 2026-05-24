@@ -49,6 +49,7 @@ No need to memorize model IDs. Use short aliases:
 | `gpt4` / `gpt4o` | gpt-4o | OpenAI |
 | `gpt4o-mini` | gpt-4o-mini | OpenAI |
 | `o3-mini` | o3-mini | OpenAI |
+| `o4-mini` | o4-mini | OpenAI |
 | `claude` / `sonnet` | claude-sonnet-4 | Anthropic |
 | `opus` | claude-opus-4 | Anthropic |
 | `haiku` | claude-haiku-4 | Anthropic |
